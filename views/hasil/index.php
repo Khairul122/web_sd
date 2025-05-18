@@ -27,17 +27,28 @@
                       <th>Nama Siswa</th>
                       <th>Kelas</th>
                       <th>Total Nilai</th>
-                      <th>Ranking</th>
+                      <th>Peniaian</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <?php $no = 1; foreach ($data['hasil'] as $h): ?>
+                    <?php $no = 1;
+                    foreach ($data['hasil'] as $h): ?>
                       <tr>
                         <td><?= $no++ ?></td>
                         <td><?= htmlspecialchars($h['nama_siswa']) ?></td>
                         <td><?= htmlspecialchars($h['nama_kelas']) ?></td>
                         <td><?= number_format($h['total_nilai'], 2) ?></td>
-                        <td><?= $h['ranking'] ?></td>
+                        <td>
+                          <?php
+                          if ($h['total_nilai'] < 3.4) {
+                            echo "Kedisiplinan Kurang";
+                          } elseif ($h['total_nilai'] > 3.5 && $h['total_nilai'] < 3.7) {
+                            echo "Kedisiplinan Cukup";
+                          } else
+                            echo "Kedisiplinan Baik";
+                          
+                          ?>
+                        </td>
                       </tr>
                     <?php endforeach; ?>
                     <?php if (empty($data['hasil'])): ?>
@@ -61,7 +72,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script>
     function cetakHasil() {
-      const { jsPDF } = window.jspdf;
+      const {
+        jsPDF
+      } = window.jspdf;
       const doc = new jsPDF();
       doc.text("Laporan Hasil Evaluasi Siswa", 14, 15);
       const rows = [];
@@ -72,15 +85,22 @@
       });
 
       doc.autoTable({
-        head: [['No', 'Nama Siswa', 'Kelas', 'Total Nilai', 'Ranking']],
+        head: [
+          ['No', 'Nama Siswa', 'Kelas', 'Total Nilai', 'Ranking']
+        ],
         body: rows,
         startY: 25,
-        styles: { fontSize: 10 },
-        headStyles: { fillColor: [52, 58, 64] }
+        styles: {
+          fontSize: 10
+        },
+        headStyles: {
+          fillColor: [52, 58, 64]
+        }
       });
 
       doc.save("hasil_evaluasi.pdf");
     }
   </script>
 </body>
+
 </html>
